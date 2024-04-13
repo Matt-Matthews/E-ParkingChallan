@@ -25,11 +25,12 @@ namespace e_parkingChallan.Controllers
         {
             var claims = new []
             {
-                // new Claim("Id", user.Id.ToString()),
+                new Claim("id", user.Id.ToString()),
                 new Claim(ClaimTypes.Email, user.Email),
-                new Claim("FirstName", user.FirstName),
-                new Claim("LastName", user.LastName),
-                new Claim("Contact", user.Contact),
+                new Claim("firstName", user.FirstName),
+                new Claim("lastName", user.LastName),
+                new Claim("contact", user.Contact),
+                new Claim("role", user.Role),
             };
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("the-super-secret-key"));

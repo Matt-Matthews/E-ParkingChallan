@@ -1,3 +1,4 @@
+using System.IdentityModel.Tokens.Jwt;
 using e_parkingChallan.Entities;
 using e_parkingChallan.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -12,18 +13,35 @@ namespace e_parkingChallan.Controllers
         private readonly LocationService _locationService;
         private readonly VehicleService _vehicleService;
         private readonly ViolationService _violationService;
+        private readonly HttpContext _httpContext;
 
-        public EParkingChallanController(ViolationService violationService, LocationService locationService, VehicleService vehicleService)
+        public EParkingChallanController(ViolationService violationService, 
+            LocationService locationService, 
+            VehicleService vehicleService, HttpContext httpContext)
         {
             _violationService = violationService;
             _locationService = locationService;
             _vehicleService = vehicleService;
+            _httpContext = httpContext;
+        }
+
+        private JwtSecurityToken ExtractToken(){
+            if(_httpContext.Request.Headers.ContainsKey("Authorzation"))
+            {
+                string headerVal = _httpContext.Request.Headers["Authorzation"];
+                headerVal = headerVal.Replace("Bearer", "");
+                var tokenHandler = new JwtSecurityTokenHandler();
+                return tokenHandler.ReadToken(headerVal) as JwtSecurityToken;
+               
+            }
+            return null;
         }
 
         [HttpGet("/violations")]
         public async Task<ActionResult<List<Violation>>> GetViolations(string input)
         {
-            string id = "from token";
+            string id = ExtractToken().Claims.First(claim => claim.Type == "id").Value;
+            Console.WriteLine(id);
             if (input == null) input = id;
             var violations = await _violationService.GetViolationsAsync(input);
             return Ok(violations);
@@ -41,7 +59,8 @@ namespace e_parkingChallan.Controllers
         public async Task<ActionResult<List<Violation>>> GetVehicles()
         {
 
-            string id = "From token";
+            string id = ExtractToken().Claims.First(claim => claim.Type == "id").Value;
+            Console.WriteLine(id);
 
             var vehicles = await _vehicleService.GetVehiclesAsync(new ObjectId(id));
             return Ok(vehicles);

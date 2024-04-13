@@ -46,7 +46,7 @@ namespace e_parkingChallan.Services
         {
             await paymentCollection.InsertOneAsync(payment);
             var update = Builders<Violation>.Update.Set(d => d.Status, "Paid");
-            await violationCollection.FindOneAndUpdateAsync(x => x.Id == payment.ViolationId, update);
+            // await violationCollection.FindOneAndUpdateAsync(x => x.Id == payment.ViolationId, update);
         }
 
         public async Task<List<ViolationType>> GetViolationTypesAsync(string input)
