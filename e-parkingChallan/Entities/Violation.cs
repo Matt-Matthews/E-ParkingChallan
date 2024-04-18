@@ -1,10 +1,9 @@
 ﻿using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
-using MongoDB.Entities;
 
 namespace e_parkingChallan.Entities
 {
-    public class Violation : Entity
+    public class Violation
     {
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]

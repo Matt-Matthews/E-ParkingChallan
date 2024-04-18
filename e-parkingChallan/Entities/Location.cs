@@ -1,11 +1,10 @@
 
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
-using MongoDB.Entities;
 
 namespace e_parkingChallan.Entities
 {
-    public class Location : Entity
+    public class Location
     {
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]

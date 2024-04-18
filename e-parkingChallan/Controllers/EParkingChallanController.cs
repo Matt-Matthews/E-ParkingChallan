@@ -13,26 +13,26 @@ namespace e_parkingChallan.Controllers
         private readonly LocationService _locationService;
         private readonly VehicleService _vehicleService;
         private readonly ViolationService _violationService;
-        private readonly HttpContext _httpContext;
 
-        public EParkingChallanController(ViolationService violationService, 
-            LocationService locationService, 
-            VehicleService vehicleService, HttpContext httpContext)
+        public EParkingChallanController(ViolationService violationService,
+            LocationService locationService,
+            VehicleService vehicleService)
         {
             _violationService = violationService;
             _locationService = locationService;
             _vehicleService = vehicleService;
-            _httpContext = httpContext;
         }
 
-        private JwtSecurityToken ExtractToken(){
-            if(_httpContext.Request.Headers.ContainsKey("Authorzation"))
+        private JwtSecurityToken ExtractToken()
+        {
+
+            if (Request.Headers.ContainsKey("Authorization"))
             {
-                string headerVal = _httpContext.Request.Headers["Authorzation"];
-                headerVal = headerVal.Replace("Bearer", "");
+                string headerVal = Request.Headers.Authorization;
+                headerVal = headerVal.Replace("Bearer ", "");
                 var tokenHandler = new JwtSecurityTokenHandler();
-                return tokenHandler.ReadToken(headerVal) as JwtSecurityToken;
-               
+                var tockenS = tokenHandler.ReadToken(headerVal) as JwtSecurityToken;
+                return tockenS;
             }
             return null;
         }
@@ -40,9 +40,10 @@ namespace e_parkingChallan.Controllers
         [HttpGet("/violations")]
         public async Task<ActionResult<List<Violation>>> GetViolations(string input)
         {
+
             string id = ExtractToken().Claims.First(claim => claim.Type == "id").Value;
-            Console.WriteLine(id);
-            if (input == null) input = id;
+            input ??= id;
+
             var violations = await _violationService.GetViolationsAsync(input);
             return Ok(violations);
         }
@@ -50,9 +51,13 @@ namespace e_parkingChallan.Controllers
         [HttpPost("/violations/add")]
         public async Task<ActionResult> CreateViolation(Violation violation)
         {
-            
-            await _violationService.AddViolationAsync(violation);
-            return Ok();
+            string id = ExtractToken().Claims.First(claim => claim.Type == "id").Value;
+            if (violation.OfficerId.ToString() == id)
+            {
+                await _violationService.AddViolationAsync(violation);
+                return Ok();
+            }
+            return Unauthorized("You are not Authorized");
         }
 
         [HttpGet("/vehicles")]
@@ -69,8 +74,13 @@ namespace e_parkingChallan.Controllers
         [HttpPost("/vehicles/add")]
         public async Task<ActionResult> AddVehicle(Vehicle vehicle)
         {
-            await _vehicleService.AddVehicleAsync(vehicle);
-            return Ok();
+            string id = ExtractToken().Claims.First(claim => claim.Type == "id").Value;
+            if (vehicle.OwnerId.ToString() == id)
+            {
+                await _vehicleService.AddVehicleAsync(vehicle);
+                return Ok();
+            }
+            return Unauthorized("You are not Authorized");
         }
 
         [HttpGet("/locations")]
@@ -92,7 +102,7 @@ namespace e_parkingChallan.Controllers
         [HttpGet("/annualTax")]
         public async Task<ActionResult<List<Violation>>> GetAnnualTax()
         {
-            string id = "from token";
+            string id = ExtractToken().Claims.First(claim => claim.Type == "id").Value;
 
             var annualTax = await _violationService.GetAnnualTaxAsync(new ObjectId(id));
 
@@ -102,7 +112,7 @@ namespace e_parkingChallan.Controllers
         [HttpPost("/annualTax/add")]
         public async Task<ActionResult> AddToAnnualTax(double amount)
         {
-            string id = "token";
+            string id = ExtractToken().Claims.First(claim => claim.Type == "id").Value;
             await _violationService.UpdateAnnualTask(new ObjectId(id), amount);
             return Ok();
         }

@@ -1,5 +1,6 @@
 using e_parkingChallan.Entities;
 using e_parkingChallan.Services;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,6 +13,7 @@ builder.Services.AddSingleton<LocationService>();
 builder.Services.AddSingleton<VehicleService>();
 builder.Services.AddSingleton<ViolationService>();
 
+builder.Services.AddHttpContextAccessor();
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
