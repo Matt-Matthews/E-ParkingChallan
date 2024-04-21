@@ -1,0 +1,29 @@
+#root {
+  /* max-width: 1280px;/ */
+  margin: 0 auto;
+  padding: 0;
+  text-align: center;
+  width: 100%;
+}
+
+.menu{
+  background-color: #646cff;
+}
+
+.main{
+  height: calc(100% - 3.5rem);
+}
+.main-view{
+  width: calc(100% - 3.5rem);
+}
+.menu-button{
+  border-top: 1px white solid;
+  font-size: 12px;
+  color: white !important;
+}
+.menu-button:hover{
+  background-color: #747bff;
+}
+.active{
+  background-color: #213547;
+} 

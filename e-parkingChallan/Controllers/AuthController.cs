@@ -85,8 +85,8 @@ namespace e_parkingChallan.Controllers
 
             return Ok();
         }
-        [HttpGet("/logout")]
-        public Task<ActionResult> Logout()
+        [HttpGet("/reset")]
+        public Task<ActionResult> ResetPassword()
         {
 
 

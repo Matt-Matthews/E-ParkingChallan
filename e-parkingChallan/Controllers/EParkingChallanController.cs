@@ -38,14 +38,21 @@ namespace e_parkingChallan.Controllers
         }
 
         [HttpGet("/violations")]
-        public async Task<ActionResult<List<Violation>>> GetViolations(string input)
+        public async Task<ActionResult<List<Violation>>> GetViolations(string input, int pageNumber = 1, int pageSize = 10)
         {
 
             string id = ExtractToken().Claims.First(claim => claim.Type == "id").Value;
             input ??= id;
 
-            var violations = await _violationService.GetViolationsAsync(input);
-            return Ok(violations);
+            var violations = await _violationService.GetViolationsAsync(input, pageNumber, pageSize);
+            var docCount = await _violationService.CountViolations(input);
+            return Ok(
+                new {
+                    violations,
+                    pages = docCount/pageSize,
+                    pageNumber
+                }
+            );
         }
 
         [HttpPost("/violations/add")]

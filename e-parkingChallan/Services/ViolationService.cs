@@ -22,11 +22,19 @@ namespace e_parkingChallan.Services
             annualTaxCollection = mongoDB.GetCollection<AnnualTax>("AnnualTax");
         }
 
-        public async Task<List<Violation>> GetViolationsAsync(string input)
+        public async Task<List<Violation>> GetViolationsAsync(string input, int pageNumber = 1, int pageSize = 10)
         {
             return await violationCollection
                 .Find(x => x.OfficerId == new ObjectId(input) || x.RegNum == input)
+                .Skip((pageNumber - 1) * pageSize).Limit(pageSize)
                 .ToListAsync();
+        }
+
+        public async Task<long> CountViolations(string input)
+        {
+            var officerFilter = Builders<Violation>.Filter.Eq(x => x.OfficerId, new ObjectId(input));
+            var vehicleFilter = Builders<Violation>.Filter.Eq(x => x.RegNum, input);
+            return await violationCollection.CountDocumentsAsync(Builders<Violation>.Filter.Or(officerFilter, vehicleFilter));
         }
 
         public async Task AddViolationAsync(Violation violation)
