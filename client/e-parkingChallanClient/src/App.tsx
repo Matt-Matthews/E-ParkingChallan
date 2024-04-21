@@ -11,9 +11,10 @@ function App() {
       const token = localStorage.getItem("jwt");
       if (token === null) setIsLoggedIn(false);
       else setIsLoggedIn(true);
+      console.log(token)
     };
-    window.addEventListener("storage", handleStorageChange);
-
+    window.addEventListener("storageEvent", handleStorageChange);
+    handleStorageChange();
     // return () => {
     //   window.removeEventListener("storage", handleStorageChange);
     // };
@@ -21,7 +22,7 @@ function App() {
 
   return (
     <div className="w-full h-screen">
-      {isLoggedIn ? <AuthView /> : <DashboardView  />}
+      {!isLoggedIn ? <AuthView /> : <DashboardView  />}
     </div>
   );
 }

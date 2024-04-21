@@ -14,16 +14,12 @@ builder.Services.AddSingleton<VehicleService>();
 builder.Services.AddSingleton<ViolationService>();
 
 builder.Services.AddHttpContextAccessor();
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy("AllowAllOrigins", policy =>
-    {
-        policy.AllowAnyHeader();
-        policy.AllowAnyOrigin();
-        policy.AllowAnyMethod();
+builder.Services.AddControllers();
+builder.Services.AddCors(CorsOptions => {
+    CorsOptions.AddPolicy("reactApp", policy =>{
+        policy.WithOrigins("http://localhost:3000").AllowCredentials().AllowAnyHeader().AllowAnyMethod();
     });
 });
-builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 
@@ -37,5 +33,6 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
+app.UseCors("reactApp");
 
 app.Run();

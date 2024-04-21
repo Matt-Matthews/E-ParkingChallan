@@ -38,19 +38,33 @@ namespace e_parkingChallan.Controllers
         }
 
         [HttpGet("/violations")]
-        public async Task<ActionResult<List<Violation>>> GetViolations(string input, int pageNumber = 1, int pageSize = 10)
+        public async Task<ActionResult<List<Violation>>> GetViolations([FromQuery] PageQuery pageQuery)
         {
+            string role = ExtractToken().Claims.First(claim => claim.Type == "role").Value;
+
+            if (role == "Officer")
+            {
+                var _violations = await _violationService.GetViolationsAsync(pageNumber: pageQuery.PageNumber, pageSize: pageQuery.PageSize);
+                var _docCount = await _violationService.CountViolations();
+                return Ok(
+                    new
+                    {
+                        violations = _violations,
+                        pages = _docCount / pageQuery.PageNumber,
+                        pageNumber = pageQuery.PageNumber
+                    }
+                );
+            }
 
             string id = ExtractToken().Claims.First(claim => claim.Type == "id").Value;
-            input ??= id;
-
-            var violations = await _violationService.GetViolationsAsync(input, pageNumber, pageSize);
-            var docCount = await _violationService.CountViolations(input);
+            var violations = await _violationService.GetViolationsByRegAsync(id, pageNumber: pageQuery.PageNumber, pageSize: pageQuery.PageSize);
+            var docCount = await _violationService.CountViolationsByID(id);
             return Ok(
-                new {
+                new
+                {
                     violations,
-                    pages = docCount/pageSize,
-                    pageNumber
+                    pages = docCount / pageQuery.PageNumber,
+                    pageNumber = pageQuery.PageNumber
                 }
             );
         }

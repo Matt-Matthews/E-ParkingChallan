@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import React from "react";
 import { useForm } from "react-hook-form";
 import Input from "./Input";
@@ -15,7 +16,28 @@ interface User {
 const RegisterForm = () => {
     const { register, handleSubmit } = useForm<User>();
     const onSubmit = async (data: User) => {
-      console.log(data)
+      const {password, confirmPassword} = data;
+      console.log()
+      if(password !== confirmPassword){
+        alert("passwords don't match!")
+      }
+      else if(Object.values(data).length < 6){
+        alert("Enter the missing values");
+      }else{
+        const {confirmPassword, ...user} = data
+        
+        const response = await fetch("http://localhost:5000/register", {
+          method: "POST",
+          body: JSON.stringify(user),
+          headers: {
+            'Accept': 'application/json, text/plain',
+            'Content-Type': 'application/json;charset=UTF-8'
+        },
+        });
+        // const json = await response.json()
+        alert(response.statusText)
+
+      }
     };
     return (
       <div className="w-1/4">

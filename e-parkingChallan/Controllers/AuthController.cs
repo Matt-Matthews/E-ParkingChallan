@@ -68,13 +68,16 @@ namespace e_parkingChallan.Controllers
         {
             try
             {
+                var _user = await _userService.GetUserAsync(user.Email);
+                if(_user != null) return StatusCode(403);
                 user.Password = BCrypt.Net.BCrypt.HashPassword(user.Password);
                 user.CreatedAt = DateTime.UtcNow;
+                user.Role = "Driver";
                 await _userService.CreateUserAsync(user);
-                var _user = await _userService.GetUserAsync(user.Email);
+                var newUser = await _userService.GetUserAsync(user.Email);
                 await _violationService.CreateAnnualTax(new AnnualTax
                 {
-                    UserId = _user.Id,
+                    UserId = newUser.Id,
                     Amount = 0,
                 });
             }

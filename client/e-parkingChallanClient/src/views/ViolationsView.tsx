@@ -1,7 +1,33 @@
-import React from "react";
+import { jwtDecode } from "jwt-decode";
+import { useEffect, useState } from "react";
 import { FaPlus, FaCaretLeft, FaCaretRight } from "react-icons/fa";
+import { User } from "../interfaces/user";
 
 const ViolationsView = () => {
+  const [user, setUser] = useState<User>();
+  const getViolations = async (pageNumber: number, pageSize: number) => {
+    const token = localStorage.getItem("jwt");
+    console.log("token" + token)
+    const response = await fetch(`http://localhost:5000/violations?pageNumber=${pageNumber}&pageSize=${pageSize}&regNumber=${null}`, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    const results = await response.json();
+    console.log(results)
+  };
+
+  useEffect(() => {
+    const token = localStorage.getItem("jwt");
+    if (token !== null) {
+      const decoded = jwtDecode<User>(token);
+      console.log(decoded);
+      setUser(decoded);
+      getViolations(1, 15);
+    }
+  }, []);
   const tableData = [
     {
       name: "test",
@@ -43,7 +69,7 @@ const ViolationsView = () => {
         </tbody>
       </table>
       <div className="w-full flex items-center justify-center absolute bottom-6">
-        <div className="flex items-center justify-center mt-6">
+        <div className="flex items-center justify-center text-white mt-6">
           <button className="py-1">
             <FaCaretLeft />
           </button>
@@ -53,9 +79,11 @@ const ViolationsView = () => {
           </button>
         </div>
       </div>
-      <button className="absolute right-6 bottom-6">
-        <FaPlus />
-      </button>
+      {user?.role === "Officer" && (
+        <button className="absolute right-6 bottom-6">
+          <FaPlus />
+        </button>
+      )}
     </div>
   );
 };

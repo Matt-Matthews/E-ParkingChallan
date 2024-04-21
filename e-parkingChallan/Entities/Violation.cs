@@ -21,6 +21,8 @@ namespace e_parkingChallan.Entities
         [BsonElement]
         public ObjectId OfficerId { get; set; }
         [BsonElement]
+        public ObjectId OwnerId { get; set; }
+        [BsonElement]
         public string[] ImageUrls { get; set; }
         [BsonElement]
         public DateTime CreatedAt { get; set; }

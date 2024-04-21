@@ -16,25 +16,34 @@ namespace e_parkingChallan.Services
         {
             var mongoClient = new MongoClient(options.Value.MongoDbConnection);
             var mongoDB = mongoClient.GetDatabase(options.Value.DatabaseName);
-            violationCollection = mongoDB.GetCollection<Violation>("violation");
+            violationCollection = mongoDB.GetCollection<Violation>("Violation");
             paymentCollection = mongoDB.GetCollection<Payment>("Payment");
-            violationTypeCollection = mongoDB.GetCollection<ViolationType>("ViolationTyoe");
+            violationTypeCollection = mongoDB.GetCollection<ViolationType>("ViolationType");
             annualTaxCollection = mongoDB.GetCollection<AnnualTax>("AnnualTax");
         }
 
-        public async Task<List<Violation>> GetViolationsAsync(string input, int pageNumber = 1, int pageSize = 10)
+        public async Task<List<Violation>> GetViolationsAsync(int pageNumber = 1, int pageSize = 10)
         {
             return await violationCollection
-                .Find(x => x.OfficerId == new ObjectId(input) || x.RegNum == input)
+                .Find(_ => true)
+                .Skip((pageNumber - 1) * pageSize).Limit(pageSize)
+                .ToListAsync();
+        }
+        public async Task<List<Violation>> GetViolationsByRegAsync(string input, int pageNumber = 1, int pageSize = 10)
+        {
+            return await violationCollection
+                .Find(x => x.RegNum == input)
                 .Skip((pageNumber - 1) * pageSize).Limit(pageSize)
                 .ToListAsync();
         }
 
-        public async Task<long> CountViolations(string input)
+        public async Task<long> CountViolations()
         {
-            var officerFilter = Builders<Violation>.Filter.Eq(x => x.OfficerId, new ObjectId(input));
-            var vehicleFilter = Builders<Violation>.Filter.Eq(x => x.RegNum, input);
-            return await violationCollection.CountDocumentsAsync(Builders<Violation>.Filter.Or(officerFilter, vehicleFilter));
+            return await violationCollection.CountDocumentsAsync(_ => true);
+        }
+        public async Task<long> CountViolationsByID(string id)
+        {
+            return await violationCollection.CountDocumentsAsync(x => x.OwnerId == new ObjectId(id));
         }
 
         public async Task AddViolationAsync(Violation violation)

@@ -27,3 +27,10 @@
 .active{
   background-color: #213547;
 } 
+td, th{
+  border: 1px solid #ddd;
+}
+thead{
+  background-color: #646cff;
+  color: white;
+}

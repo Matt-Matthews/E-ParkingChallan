@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import NavBar from "../Components/NavBar";
-import { FaExclamationTriangle, FaCar, FaMoneyBillWave, FaTools } from "react-icons/fa";
+import { FaExclamationTriangle, FaCar, FaMoneyBillWave, FaTools, FaSignOutAlt } from "react-icons/fa";
 import MenuButton from "../Components/MenuButton";
 import ViolationsView from "./ViolationsView";
 import VehiclesView from "./VehiclesView";
@@ -13,6 +13,10 @@ const DashboardView = () => {
     SetIsactive(value)
     console.log(value)
   }
+  const handleLogout = () => {
+    localStorage.removeItem("jwt");
+    window.dispatchEvent(new Event("storageEvent"));
+  }
   return (
     <div className="w-full h-full">
       <NavBar />
@@ -22,8 +26,9 @@ const DashboardView = () => {
           <MenuButton isActive={isActive} handleClick={handleClick} title="Vehicles" Icon={FaCar} />
           <MenuButton isActive={isActive} handleClick={handleClick} title="Annual-tax" Icon={FaMoneyBillWave} />
           <MenuButton isActive={isActive} handleClick={handleClick} title="Settings" Icon={FaTools} />
+          <MenuButton isActive={isActive} handleClick={handleLogout} title="Logout" Icon={FaSignOutAlt} />
         </div>
-        <div className="main-view h-full p-3 ">
+        <div className="main-view h-full p-3">
           {isActive === "Violations" && <ViolationsView />}
           {isActive === "Vehicles" && <VehiclesView />}
           {isActive === "Annual-tax" && <AnnualTaxView />}
