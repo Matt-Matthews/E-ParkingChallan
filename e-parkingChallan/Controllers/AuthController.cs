@@ -77,7 +77,7 @@ namespace e_parkingChallan.Controllers
                 var newUser = await _userService.GetUserAsync(user.Email);
                 await _violationService.CreateAnnualTax(new AnnualTax
                 {
-                    UserId = newUser.Id,
+                    UserId = newUser.Id.ToString(),
                     Amount = 0,
                 });
             }

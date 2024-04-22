@@ -15,11 +15,11 @@ namespace e_parkingChallan.Entities
         [BsonElement]
         public string Make { get; set; }
         [BsonElement]
-        public int VinNumber { get; set; }
+        public string VinNumber { get; set; }
         [BsonElement]
         public string Color { get; set; }
         [BsonElement]
-        public ObjectId OwnerId { get; set; }
+        public string OwnerId { get; set; }
         [BsonElement]
         public DateTime CreatedAt { get; set; }
     }

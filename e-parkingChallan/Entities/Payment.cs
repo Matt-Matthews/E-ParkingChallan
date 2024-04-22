@@ -17,6 +17,6 @@ namespace e_parkingChallan.Entities
         [BsonElement]
         public string Amount { get; set; }
         [BsonElement]
-        public ObjectId ViolationId { get; set; }
+        public string ViolationId { get; set; }
     }
 }

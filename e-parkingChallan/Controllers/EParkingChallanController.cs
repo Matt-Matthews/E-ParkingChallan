@@ -2,7 +2,6 @@ using System.IdentityModel.Tokens.Jwt;
 using e_parkingChallan.Entities;
 using e_parkingChallan.Services;
 using Microsoft.AspNetCore.Mvc;
-using MongoDB.Bson;
 
 namespace e_parkingChallan.Controllers
 {
@@ -75,6 +74,8 @@ namespace e_parkingChallan.Controllers
             string id = ExtractToken().Claims.First(claim => claim.Type == "id").Value;
             if (violation.OfficerId.ToString() == id)
             {
+                var vehicle = await _vehicleService.GetVehicleByRegAsync(violation.RegNum);
+                if (vehicle != null) violation.OwnerId = vehicle.OwnerId;
                 await _violationService.AddViolationAsync(violation);
                 return Ok();
             }
@@ -88,7 +89,7 @@ namespace e_parkingChallan.Controllers
             string id = ExtractToken().Claims.First(claim => claim.Type == "id").Value;
             Console.WriteLine(id);
 
-            var vehicles = await _vehicleService.GetVehiclesAsync(new ObjectId(id));
+            var vehicles = await _vehicleService.GetVehiclesAsync(id);
             return Ok(vehicles);
         }
 
@@ -125,7 +126,7 @@ namespace e_parkingChallan.Controllers
         {
             string id = ExtractToken().Claims.First(claim => claim.Type == "id").Value;
 
-            var annualTax = await _violationService.GetAnnualTaxAsync(new ObjectId(id));
+            var annualTax = await _violationService.GetAnnualTaxAsync(id);
 
             return Ok(annualTax);
         }
@@ -134,7 +135,7 @@ namespace e_parkingChallan.Controllers
         public async Task<ActionResult> AddToAnnualTax(double amount)
         {
             string id = ExtractToken().Claims.First(claim => claim.Type == "id").Value;
-            await _violationService.UpdateAnnualTask(new ObjectId(id), amount);
+            await _violationService.UpdateAnnualTask(id, amount);
             return Ok();
         }
     }

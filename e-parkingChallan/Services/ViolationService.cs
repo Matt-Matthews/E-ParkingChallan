@@ -43,7 +43,7 @@ namespace e_parkingChallan.Services
         }
         public async Task<long> CountViolationsByID(string id)
         {
-            return await violationCollection.CountDocumentsAsync(x => x.OwnerId == new ObjectId(id));
+            return await violationCollection.CountDocumentsAsync(x => x.OwnerId == id);
         }
 
         public async Task AddViolationAsync(Violation violation)
@@ -63,7 +63,7 @@ namespace e_parkingChallan.Services
         {
             await paymentCollection.InsertOneAsync(payment);
             var update = Builders<Violation>.Update.Set(d => d.Status, "Paid");
-            await violationCollection.FindOneAndUpdateAsync(x => x.Id == payment.ViolationId, update);
+            await violationCollection.FindOneAndUpdateAsync(x => x.Id == new ObjectId(payment.ViolationId), update);
         }
 
         public async Task<List<ViolationType>> GetViolationTypesAsync(string input)
@@ -77,12 +77,12 @@ namespace e_parkingChallan.Services
             }
         }
 
-        public async Task<List<AnnualTax>> GetAnnualTaxAsync(ObjectId id)
+        public async Task<List<AnnualTax>> GetAnnualTaxAsync(string id)
         {
             return await annualTaxCollection.Find(x => x.UserId == id).ToListAsync();
         }
 
-        public async Task UpdateAnnualTask(ObjectId id, double amount)
+        public async Task UpdateAnnualTask(string id, double amount)
         {
             var annualTax = await GetAnnualTaxAsync(id);
             var update = Builders<AnnualTax>.Update.Set(d => d.Amount, annualTax[0].Amount + amount);

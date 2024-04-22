@@ -13,15 +13,15 @@ namespace e_parkingChallan.Entities
         [BsonElement]
         public string Description { get; set; }
         [BsonElement]
-        public string LocationId { get; set; }
+        public string Location { get; set; }
         [BsonElement]
         public string ViolationType { get; set; }
         [BsonElement]
         public string Status { get; set; }
         [BsonElement]
-        public ObjectId OfficerId { get; set; }
+        public string OfficerId { get; set; }
         [BsonElement]
-        public ObjectId OwnerId { get; set; }
+        public string OwnerId { get; set; }
         [BsonElement]
         public string[] ImageUrls { get; set; }
         [BsonElement]

@@ -2,7 +2,7 @@ export interface violation{
     id: string;
     regNum: string;
     description: string;
-    locationId: string;
+    location: string;
     violationType: string;
     status: string;
     officerId: string;

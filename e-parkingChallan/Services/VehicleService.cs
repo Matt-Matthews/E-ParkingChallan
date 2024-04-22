@@ -16,7 +16,7 @@ namespace e_parkingChallan.Services
             vehicleCollection = mongoDatabase.GetCollection<Vehicle>("Vehicle");
         }
 
-        public async Task<List<Vehicle>> GetVehiclesAsync(ObjectId Id)
+        public async Task<List<Vehicle>> GetVehiclesAsync(string Id)
         {
             return await vehicleCollection.Find(x => x.OwnerId == Id).ToListAsync();
         }
@@ -24,6 +24,10 @@ namespace e_parkingChallan.Services
         public async Task AddVehicleAsync(Vehicle vehicle)
         {
             await vehicleCollection.InsertOneAsync(vehicle);
+        }
+        public async Task<Vehicle> GetVehicleByRegAsync(string reg)
+        {
+            return await vehicleCollection.Find(x => x.Registration == reg).FirstOrDefaultAsync();
         }
     }
 }
