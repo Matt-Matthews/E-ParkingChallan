@@ -20,6 +20,8 @@ namespace e_parkingChallan.Entities
         public string Status { get; set; }
         [BsonElement]
         public string OfficerId { get; set; }
+         [BsonElement]
+        public double Amount { get; set; }
         [BsonElement]
         public string OwnerId { get; set; }
         [BsonElement]

@@ -1,18 +1,21 @@
 import { useForm } from "react-hook-form";
 import Input from "./Input";
-import { violation } from "../interfaces/violation";
+import { Violation } from "../interfaces/violation";
 import { FaTimes } from "react-icons/fa";
 import { useEffect, useState } from "react";
 import { storage } from "../config/firebase";
 import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 import { jwtDecode } from "jwt-decode";
 import { User } from "../interfaces/user";
+interface Props{
+  close: () =>void
+}
 
-const ViolationForm = () => {
-  const { register, handleSubmit } = useForm<violation>();
+const ViolationForm = ({close}: Props) => {
+  const { register, handleSubmit } = useForm<Violation>();
   const [files, setFiles] = useState<Array<File>>([]);
   const [imageUrls, setImageUrls] = useState<Array<string>>([]);
-  const [_violation, setViolation] = useState<violation>();
+  const [_violation, setViolation] = useState<Violation>();
 
   const uploadeImg = (img: File) => {
     const storageRef = ref(storage, `/images/${img.name}`);
@@ -32,7 +35,7 @@ const ViolationForm = () => {
   const fileHandler = (e) => {
     setFiles((curr) => [...curr, ...e.target.files]);
   };
-  const onSubmit = async (data: violation) => {
+  const onSubmit = async (data: Violation) => {
     setViolation(data);
     console.log(files?.length, files);
     for (const file of files) {
@@ -45,6 +48,7 @@ const ViolationForm = () => {
     const decoded = jwtDecode<User>(token!);
     const data = {
       ..._violation,
+      amount: 200,
       imageUrls,
       officerId: decoded.id,
       status: "Unpaid",
@@ -70,7 +74,7 @@ const ViolationForm = () => {
   return (
     <div className="w-full z-50 h-full absolute top-0 left-0 popup flex items-center justify-center">
       <div className="popup-form w-1/2 py-3 flex flex-col items-center relative">
-        <button className="absolute top-2 right-2 w-10 h-10 rounded-full flex flex-col items-center justify-center">
+        <button onClick={()=>close()} className="absolute top-2 right-2 w-10 h-10 rounded-full flex flex-col items-center justify-center">
           <FaTimes />
         </button>
         <form className="w-1/2" onSubmit={handleSubmit(onSubmit)}>

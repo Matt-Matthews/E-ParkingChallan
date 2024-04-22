@@ -62,7 +62,7 @@ namespace e_parkingChallan.Controllers
                 new
                 {
                     violations,
-                    pages = docCount / pageQuery.PageNumber,
+                    pages = docCount / pageQuery.PageSize,
                     pageNumber = pageQuery.PageNumber
                 }
             );

@@ -15,7 +15,7 @@ namespace e_parkingChallan.Entities
         [BsonElement]
         public string ExpireDate { get; set; }
         [BsonElement]
-        public string Amount { get; set; }
+        public double Amount { get; set; }
         [BsonElement]
         public string ViolationId { get; set; }
     }
