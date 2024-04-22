@@ -3,7 +3,7 @@
   margin: 0 auto;
   padding: 0;
   text-align: center;
-  width: 100%;
+  overflow: hidden;
 }
 
 .menu{
@@ -33,4 +33,17 @@ td, th{
 thead{
   background-color: #646cff;
   color: white;
+}
+.popup{
+  background-color: rgba(0, 0, 0, 0.5);
+  height: 100vh;
+  width: 100vw;
+}
+.popup-form{
+  background-color: #242424;
+}
+@media (prefers-color-scheme: light){
+  .popup-form{
+    background-color: white;
+  }
 }

@@ -18,7 +18,7 @@ const DashboardView = () => {
     window.dispatchEvent(new Event("storageEvent"));
   }
   return (
-    <div className="w-full h-full">
+    <div className="w-full h-full ">
       <NavBar />
       <div className="flex items-center main">
         <div className="menu h-full w-14 pt-3">

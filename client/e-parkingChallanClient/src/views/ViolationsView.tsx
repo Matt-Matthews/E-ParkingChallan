@@ -2,6 +2,7 @@ import { jwtDecode } from "jwt-decode";
 import { useEffect, useState } from "react";
 import { FaPlus, FaCaretLeft, FaCaretRight } from "react-icons/fa";
 import { User } from "../interfaces/user";
+import ViolationForm from "../Components/ViolationForm";
 
 const ViolationsView = () => {
   const [user, setUser] = useState<User>();
@@ -50,6 +51,7 @@ const ViolationsView = () => {
   ];
   return (
     <div className="w-full h-full">
+      <ViolationForm />
       <table className="w-full">
         <thead>
           {Object.keys(tableData[0]).map((val, index) => {
