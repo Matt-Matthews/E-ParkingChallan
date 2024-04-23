@@ -29,10 +29,10 @@ namespace e_parkingChallan.Services
                 .Skip((pageNumber - 1) * pageSize).Limit(pageSize)
                 .ToListAsync();
         }
-        public async Task<List<Violation>> GetViolationsByRegAsync(string input, int pageNumber = 1, int pageSize = 10)
+        public async Task<List<Violation>> GetViolationsByIDAsync(string input, int pageNumber = 1, int pageSize = 10)
         {
             return await violationCollection
-                .Find(x => x.RegNum == input)
+                .Find(x => x.OwnerId == input)
                 .Skip((pageNumber - 1) * pageSize).Limit(pageSize)
                 .ToListAsync();
         }

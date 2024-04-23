@@ -14,7 +14,8 @@ const ViolationsView = () => {
   const [pageNumber, setPageNumber] = useState(1);
   const [pages, setPages] = useState(1);
   const [isOptionsOpen, setIsOptionsOpen] = useState(false);
-  const [isPaying, setIsPaying] = useState(false);
+  const [optionsKey, setOptionsKey] = useState("");
+  const [isPaying, setIsPaying] = useState("");
 
   const getViolations = async (pageNumber: number, pageSize: number) => {
     const token = localStorage.getItem("jwt");
@@ -33,6 +34,7 @@ const ViolationsView = () => {
     setViolations(results.violations);
     setPageNumber(results.pageNumber);
     setPages(results.pages);
+    console.log(results)
   };
 
   const getOtherPage = async (isIncrement = true) => {
@@ -58,7 +60,7 @@ const ViolationsView = () => {
       {isAddViolation && (
         <ViolationForm close={() => setIsAddViolation(false)} />
       )}
-      {isPaying&&<PaymentForm close={()=>setIsPaying(false)} />}
+      {isPaying !== ""&&<PaymentForm id={isPaying} close={()=>setIsPaying("false")} />}
       <table className="w-full">
         <thead>
           <th>Reg Number</th>
@@ -72,6 +74,7 @@ const ViolationsView = () => {
         </thead>
         <tbody>
           {violations.map((row) => {
+            console.log(row.id)
             return (
               <tr key={row.id}>
                 <td>{row.regNum}</td>
@@ -82,9 +85,12 @@ const ViolationsView = () => {
                 <td>{row.status}</td>
                 <td>{row.imageUrls.length}</td>
                 {user?.role === "Driver"&&<td>
-                  <button onClick={()=>setIsOptionsOpen(true)} onBlur={()=>setIsOptionsOpen(false)} className="bg-transparent relative">
+                  <button onClick={()=>{
+                    setIsOptionsOpen(true)
+                    setOptionsKey(row.id)
+                  }} onBlur={()=>setOptionsKey("")} className="bg-transparent relative">
                     <FaEllipsisV />
-                    {isOptionsOpen && <OptionsMenu amount={row.amount} openPay={()=>setIsPaying(true)} />}
+                    {optionsKey===row.id && <OptionsMenu amount={row.amount} openPay={()=>setIsPaying(row.id)} />}
                   </button>
                 </td>}
               </tr>

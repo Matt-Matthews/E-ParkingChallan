@@ -31,6 +31,11 @@ const VehiclesView = () => {
       },
     });
     if (!res.ok) alert(res.statusText);
+    else {
+      const results = await res.json();
+      console.log(results)
+      setVehicles(results)
+    }
     
   }
 

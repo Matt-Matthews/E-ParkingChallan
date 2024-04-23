@@ -44,25 +44,28 @@ namespace e_parkingChallan.Controllers
             if (role == "Officer")
             {
                 var _violations = await _violationService.GetViolationsAsync(pageNumber: pageQuery.PageNumber, pageSize: pageQuery.PageSize);
+                Console.WriteLine(_violations[0].Id);
                 var _docCount = await _violationService.CountViolations();
+                
                 return Ok(
                     new
                     {
                         violations = _violations,
-                        pages = _docCount / pageQuery.PageNumber,
+                        pages = (int)Math.Floor((double)_docCount / pageQuery.PageNumber) + 1,
                         pageNumber = pageQuery.PageNumber
                     }
                 );
             }
 
             string id = ExtractToken().Claims.First(claim => claim.Type == "id").Value;
-            var violations = await _violationService.GetViolationsByRegAsync(id, pageNumber: pageQuery.PageNumber, pageSize: pageQuery.PageSize);
+            var violations = await _violationService.GetViolationsByIDAsync(id, pageNumber: pageQuery.PageNumber, pageSize: pageQuery.PageSize);
+            Console.WriteLine(violations[0].Id);
             var docCount = await _violationService.CountViolationsByID(id);
             return Ok(
                 new
                 {
                     violations,
-                    pages = docCount / pageQuery.PageSize,
+                    pages = (int)Math.Floor((double)docCount / pageQuery.PageSize) + 1,
                     pageNumber = pageQuery.PageNumber
                 }
             );
@@ -85,11 +88,16 @@ namespace e_parkingChallan.Controllers
         [HttpGet("/vehicles")]
         public async Task<ActionResult<List<Violation>>> GetVehicles()
         {
+            string role = ExtractToken().Claims.First(claim => claim.Type == "role").Value;
+            if (role == "Driver")
+            {
+                string id = ExtractToken().Claims.First(claim => claim.Type == "id").Value;
+                Console.WriteLine(id);
 
-            string id = ExtractToken().Claims.First(claim => claim.Type == "id").Value;
-            Console.WriteLine(id);
-
-            var vehicles = await _vehicleService.GetVehiclesAsync(id);
+                var _vehicles = await _vehicleService.GetVehiclesByIdAsync(id);
+                return Ok(_vehicles);
+            }
+            var vehicles = await _vehicleService.GetVehiclesAsync();
             return Ok(vehicles);
         }
 

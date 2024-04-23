@@ -6,9 +6,10 @@ import Input from "./Input";
 
 interface Props {
   close: () => void;
+  id: string
 }
 
-const PaymentForm = ({ close }: Props) => {
+const PaymentForm = ({ close, id }: Props) => {
   const { register, handleSubmit } = useForm<Payment>();
 
   const onSubmit = async (data: Payment) => {
@@ -17,7 +18,7 @@ const PaymentForm = ({ close }: Props) => {
       `http://localhost:5000/payment`,
       {
         method: "POST",
-        body: JSON.stringify(data),
+        body: JSON.stringify({...data, violationId: id}),
         headers: {
           Authorization: `Bearer ${token}`,
         },

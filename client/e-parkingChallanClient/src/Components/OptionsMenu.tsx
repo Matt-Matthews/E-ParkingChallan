@@ -25,7 +25,7 @@ const OptionsMenu = ({amount, openPay}: Props) => {
   return (
     <div className='w-40 h-40 flex flex-col gap-2 popup-form shadow-md absolute top-5 rounded-md right-0 z-50'>
         <button className='bg-transparent'>View</button>
-        <button onClick={()=>openPay}  className='bg-transparent'>Pay</button>
+        <button onClick={()=>openPay()}  className='bg-transparent'>Pay</button>
         <button onClick={()=>AddtoTax(amount)} className='bg-transparent'>Add to Tax</button>
     </div>
   )
